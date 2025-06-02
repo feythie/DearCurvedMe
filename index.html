@@ -187,49 +187,104 @@
           <span>Back</span>
         </div>
       `;
-      return card;
-    }
+      <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    function loadLetters() {
-      const savedLetters = JSON.parse(localStorage.getItem("letters")) || [];
-      const allLetters = [...savedLetters, ...defaultLetters];
-      container.innerHTML = '';
-      allLetters.forEach(data => {
-        container.appendChild(createCard(data));
-      });
-      document.getElementById("letterCount").textContent = `${allLetters.length} posts found`;
-    }
+  const firebaseConfig = {
+    apiKey: "AIzaSyA4Of5CvqzoTP-DOhWdyabiYAwjpvrVewU",
+    authDomain: "dear-curved-me.firebaseapp.com",
+    projectId: "dear-curved-me",
+    storageBucket: "dear-curved-me.firebasestorage.app",
+    messagingSenderId: "798066310979",
+    appId: "1:798066310979:web:914e20f390ec04882079f6",
+    measurementId: "G-89X2K0W57B"
+  };
 
-    function filterLetters() {
-      const input = document.getElementById('searchInput').value.toLowerCase();
-      const cards = document.querySelectorAll('.card');
-      cards.forEach(card => {
-        const name = card.getAttribute('data-name');
-        card.style.display = name.includes(input) ? 'block' : 'none';
-      });
-    }
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-    function showLetterPage() {
-      document.getElementById('lettersContainer').style.display = 'none';
-      document.querySelector('.top-controls').style.display = 'none';
-      document.getElementById('letterPage').style.display = 'flex';
-    }
-
-    function submitLetter() {
-      const name = document.getElementById('nameInput').value.trim();
-      const message = document.getElementById('letterInput').value.trim();
-
-      if (!name || !message) return alert("BOTH NAME AND LETTER, SWEETIE. DON’T LEAVE ME HANGIN’!");
-
-      const newLetter = { name, message };
-      const saved = JSON.parse(localStorage.getItem("letters")) || [];
-      saved.unshift(newLetter);
-      localStorage.setItem("letters", JSON.stringify(saved));
+  async function submitLetterToFirebase(name, message) {
+    try {
+      await addDoc(collection(db, "letters"), { name, message });
       alert("YOUR LETTER WAS SENT TO YOUR PAST SELF. WE LOVE A HEALING ICON.");
-      window.location.reload();
-    }
+      location.reload();
+    } catch (e) {
+      alert (" WHOOPSIES! Couldn't save it: " + e.message);
+    } 
+  }
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    loadLetters();
-  </script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyA4Of5CvqzoTP-DOhWdyabiYAwjpvrVewU",
+    authDomain: "dear-curved-me.firebaseapp.com",
+    projectId: "dear-curved-me",
+    storageBucket: "dear-curved-me.firebasestorage.app",
+    messagingSenderId: "798066310979",
+    appId: "1:798066310979:web:914e20f390ec04882079f6",
+    measurementId: "G-89X2K0W57B"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  async function submitLetterToFirebase(name, message) {
+    try {
+      await addDoc(collection(db, "letters"), { name, message });
+      alert("YOUR LETTER WAS SENT TO YOUR PAST SELF. WE LOVE A HEALING ICON.");
+      location.reload();
+    } catch (e) {
+      alert (" WHOOPSIES! Couldn't save it: " + e.message);
+    } 
+  }
+
+  async function loadLetters() {
+    const lettersContainer = document.getElementById("lettersContainer");
+    const querySnapshot = await getDocs(collection(db, "letters"));
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      const card = document.createElement("div");
+      card.className = "card";
+      card.setAttribute("data-name", data.name.toLowerCase());
+      card.innerHTML = `
+        <div class="card-header">
+          <div>To: ${data.name}</div>
+          <div>ABC</div>
+        </div>
+        <div class="message">${data.message}</div>
+        <div class="footer">
+          <span>dearcurvedme</span>
+          <span>Back</span>
+        </div>`;
+      lettersContainer.appendChild(card);
+    });
+
+    document.querySelector(".letter-count").innerText = `${querySnapshot.size} posts found`;
+  }
+
+  // BIND GLOBALS
+  window.submitLetter = function () {
+    const name = document.getElementById("nameInput").value.trim();
+    const message = document.getElementById("letterInput").value.trim();
+    if (!name || !message) {
+      alert("YOUR LETTER WAS SENT TO YOUR PAST SELF. WE LOVE A HEALING ICON.");
+      return;
+    }
+    submitLetterToFirebase(name, message);
+  };
+
+  window.filterLetters = function () {
+    const input = document.getElementById("searchInput").value.toLowerCase();
+    const cards = document.querySelectorAll(".card");
+    cards.forEach((card) => {
+      const name = card.getAttribute("data-name");
+      card.style.display = name.includes(input) ? "block" : "none";
+    });
+  };
+
+  window.addEventListener("DOMContentLoaded", loadLetters);
+</script>
 </body>
 </html>
