@@ -167,13 +167,6 @@
       { name: "Sami", message: "You joked about the metal in your back. But I know it hurt to laugh." }
     ];
 
-    while (defaultLetters.length < 48) {
-      defaultLetters.push({
-        name: `Anon${defaultLetters.length + 1}`,
-        message: `Another letter to my younger self. You were worthy even curved.`
-      });
-    }
-
     const container = document.getElementById('lettersContainer');
 
     function createCard(data) {
