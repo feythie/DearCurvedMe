@@ -108,7 +108,12 @@
     }
 
     #letterInput {
-      height: 200px;
+      font-family: 'Montserrat';
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: 1.5px;
+  text-align: center;
+  margin-top: 10px;
     }
 
     #sendButton {
@@ -133,7 +138,7 @@
 <body>
   <h1>DEAR CURVED ME</h1>
   <div class="top-controls">
-    <div class="letter-count" id="letterCount">LOADING LETTERS...</div>
+    <div class="letter-count">a collection of scars turned stories</div>
     <button class="write-button" onclick="showLetterPage()">WRITE A LETTER</button>
     <div class="search-bar">
       <input type="text" id="searchInput" placeholder="Search for a name..." oninput="filterLetters()" />
